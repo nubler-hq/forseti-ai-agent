@@ -76,6 +76,15 @@
             background-color: #cccccc;
             cursor: not-allowed;
         }
+        .loading {
+            opacity: 0.6;
+            font-style: italic;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 0.8; }
+        }
     </style>
 </head>
 <body>

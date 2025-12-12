@@ -24,9 +24,19 @@ document.addEventListener('DOMContentLoaded', () => {
             appendMessage('user', command);
             input.value = '';
             sendButton.disabled = true;
+            
+            // Adicionar indicador de carregamento
+            const loadingDiv = document.createElement('div');
+            loadingDiv.classList.add('message', 'agent', 'loading');
+            loadingDiv.textContent = 'Processando...';
+            chatBox.appendChild(loadingDiv);
+            chatBox.scrollTop = chatBox.scrollHeight;
 
             // Envia a mensagem para o service worker (background script)
             chrome.runtime.sendMessage({ action: 'processCommand', command: command }, (response) => {
+                // Remover indicador de carregamento
+                loadingDiv.remove();
+                
                 if (response && response.reply) {
                     appendMessage('agent', response.reply);
                 } else if (response && response.error) {

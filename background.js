@@ -17,12 +17,34 @@ As AÇÕES possíveis e seus VALORES esperados são:
 4. GET_CONTENT: Obter o conteúdo da página. VALOR: null.
 5. SAY: Responder ao usuário com texto. Use esta ação se o comando não for uma ação de controle do navegador. VALOR: A resposta em texto (ex: "Olá, como posso ajudar?").
 
+**IMPORTANTE para seletores CSS:**
+- Prefira seletores específicos usando IDs únicos (ex: "button#submit-btn")
+- Use atributos data-* quando disponíveis (ex: "button[data-action='submit']")
+- Para formulários, use atributos name ou type (ex: "input[name='email']" ou "input[type='email']")
+- Evite seletores genéricos como "button" ou "a" - seja o mais específico possível
+- Se o comando mencionar texto visível, inclua múltiplas opções de seletores separados por vírgula (ex: "button#login, a[href*='login'], button:contains('Login')")
+
 Se o comando for ambíguo, use a ação SAY e peça mais detalhes.
 Sua resposta DEVE ser APENAS o objeto JSON. Não inclua texto explicativo, Markdown ou qualquer outra coisa.
+
+Exemplos de respostas corretas:
+{"action": "NAVIGATE", "value": "https://www.google.com"}
+{"action": "CLICK", "value": "button#search-btn, button[type='submit'], button:contains('Buscar')"}
+{"action": "FILL_FORM", "value": {"selector": "input[name='email'], input[type='email'], input#email", "text": "usuario@exemplo.com"}}
+{"action": "SAY", "value": "Olá! Como posso ajudar você hoje?"}
 `;
 
 // Função para chamar a API Gemini (usando o endpoint compatível com OpenAI)
 async function callGeminiAPI(command) {
+    // Verificar cache primeiro
+    const cacheKey = `cache_${command.toLowerCase().trim()}`;
+    const cached = await chrome.storage.local.get(cacheKey);
+    
+    if (cached[cacheKey] && (Date.now() - cached[cacheKey].timestamp < 3600000)) {
+        console.log('Retornando resposta do cache para:', command);
+        return cached[cacheKey].response;
+    }
+
     const { apiKey } = await chrome.storage.local.get('apiKey');
 
     if (!apiKey) {
@@ -57,7 +79,14 @@ async function callGeminiAPI(command) {
         
         // Tenta parsear o JSON
         try {
-            return JSON.parse(jsonString);
+            const parsedResponse = JSON.parse(jsonString);
+            
+            // Salvar no cache
+            await chrome.storage.local.set({
+                [cacheKey]: { response: parsedResponse, timestamp: Date.now() }
+            });
+            
+            return parsedResponse;
         } catch (e) {
             console.error('Erro ao decodificar JSON:', e, 'String:', jsonString);
             return { action: 'SAY', value: 'Erro: A IA retornou um formato de ação inválido.' };

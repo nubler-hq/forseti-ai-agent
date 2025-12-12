@@ -1,0 +1,29 @@
+**Issue 1: Refatorar para SDK/Endpoint Nativo Gemini**
+- **Título:** Refactor: Migrar chamada de API para SDK/Endpoint nativo Gemini
+- **Corpo:** A integração atual utiliza o endpoint compatível com OpenAI. Devemos migrar para o SDK oficial do Google AI para JavaScript (se compatível com Service Workers) ou para o endpoint REST nativo do Gemini para garantir a compatibilidade total com recursos multimodais e evitar dependências de terceiros.
+- **Prioridade:** Alta
+- **Labels:** `enhancement`, `gemini-api`
+
+**Issue 2: Implementar Suporte Multimodal (YouTube)**
+- **Título:** Feature: Adicionar suporte multimodal para análise de vídeos do YouTube
+- **Corpo:** Implementar a lógica no `background.js` para que, ao receber um comando de análise de um vídeo do YouTube (ex: "Resuma este vídeo"), ele extraia a URL, utilize a API Gemini Multimodal para processar o vídeo e retorne o resumo. Isso pode envolver a extração de frames ou o uso de APIs de transcrição.
+- **Prioridade:** Alta
+- **Labels:** `feature`, `multimodal`, `gemini-api`
+
+**Issue 3: Aprimoramento do Design e UX**
+- **Título:** UI/UX: Aprimorar o design minimalista e a experiência do usuário
+- **Corpo:** Refinar o CSS do `popup.html` e `options.html` para um visual mais polido e profissional, alinhado com o estilo "Operator" do ChatGPT. Melhorar a usabilidade, especialmente o feedback de carregamento e erro.
+- **Prioridade:** Média
+- **Labels:** `enhancement`, `ui/ux`
+
+**Issue 4: Integração com MCP Servers**
+- **Título:** Feature: Integrar suporte ao Model Context Protocol (MCP) Servers
+- **Corpo:** Adicionar campos de configuração na página de opções para URLs de MCP Server. Implementar a lógica no `background.js` para que, se configurado, o agente possa se comunicar com um MCP Server para delegação de tarefas de automação complexas.
+- **Prioridade:** Média
+- **Labels:** `feature`, `mcp`
+
+**Issue 5: Refinar Funções de Controle do Navegador**
+- **Título:** Refactor: Melhorar a precisão das funções de controle (CLICK e FILL_FORM)
+- **Corpo:** Aprimorar as funções `clickElement` e `fillForm` para usar seletores CSS mais robustos (ex: XPath ou seletor gerado por IA) e lidar melhor com elementos dinâmicos ou iframes.
+- **Prioridade:** Média
+- **Labels:** `enhancement`, `browser-control`
